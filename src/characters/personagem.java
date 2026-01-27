@@ -1,88 +1,98 @@
-import java.util.Random;
+package characters;
 
-public class Main {
-    public static void main(String[] args) {
+import java.util.List;
 
-        Personagem guerreiro = new Personagem("O Guerreiro", 65, 0);
-        Personagem ranger = new Personagem("O Patrulheiro", 45, 10);
-        Personagem mago = new Personagem("O Mago", 35, 40);
-        Personagem tank = new Personagem("A MURALHA", 100, 0);
-        guerreiro.mostrarStatus();
-        ranger.mostrarStatus();
-        mago.mostrarStatus();
-        tank.mostrarStatus();
+public abstract class Personagem {
 
-        guerreiro.atacar(inimigo, 10);
-        ranger.atacar(inimigo, 15);
-        tank.atacar(inimigo, 6);
-        mago.atacar(inimigo, 10);
-        mago.gastarMana(5);
-        mago.recuperarMana(2);
+    private final String nome;
+    private int vida, defesa, critico, dano; 
+    private int mana, manaRegen, custoMana;
+    private final int vidaMax, manaMax;
 
-        // Tornar objeto Personagem em alvo [inimigo] (ao selecionar e entrar em arena, igualar e, ao fim, deletar a equalidade)
-    }
-}
-
-public class Personagem {
-    private String nome;
-    private int vida;
-    private int mana;
-    private int defesa;
-
-    public Personagem(String nome, int vida, int mana) {
+    public Personagem(String nome, int vida, int mana, int dano, int manaRegen, int defesa, int critico) {
         this.nome = nome;
-        this.vida = vida;
-        this.mana = mana;
+        this.vida = vidaMax = vida;
+        this.mana = manaMax = mana;
+        this.dano = dano;
+        this.manaRegen = manaRegen;
         this.defesa = defesa;
+        this.critico = critico;
     }
 
-    public void receberDano(int dano) {
-        vida -= dano;
+    //Aqui tem os metodos de batalha ----------------------------
+    public int receberDano(int dano) {
+        int danoTotal = dano - defesa;
+        if (danoTotal < 0) {
+            danoTotal = 0;
+        }
 
+        vida = vida - danoTotal;
         if (vida < 0) {
             vida = 0;
         }
 
-        System.out.println(vida);
+        return vida;
     }
 
-    public void personagemVivo(int vida){
-        if (vida > 0) {
-            System.out.println(nome + "está vivo.");
+    //overload
+    public int receberDano(int dano, boolean isMagico) {
+        if (isMagico) {
+            //Dano Magico
+            if (dano < 0) {
+                dano = 0;
+            }
+
+            vida = vida - dano;
+            if (vida < 0) {
+                vida = 0;
+            }
+
+            return vida;
         } else {
-            System.out.println(nome + "está morto.");
+            //Dano normal
+            return receberDano(dano);
         }
     }
 
-    public void atacar(Personagem inimigo, int dano) {
-        System.out.println(nome + " atacou " + inimigo.nome);
-        inimigo.receberDano(dano-defesa);
-    }
-    
-    public void usarMagia(Personagem mago, int mana, int dano) {
-        System.out.println(nome + "Usou sua magia!");
-        mago.gastarMana();
-        mago.atacar(inimigo, 30);
+    public int atacar() {
+        if (mana < manaMax) {
+            recuperarMana();
+        }
+        //TODO: implementar logica de ataque com critico
+        return dano;
     }
 
-    public void gastarMana(int custo) {
+    //Magias --------------------------------------------
+    public List<Integer> usarMagia() {
+        if (gastarMana(custoMana)) {
+            return List.of(dano, 1); // 1 = sucesso
+        } else {
+            return List.of(0, 0); // 0 = falha
+        }
+    }
+
+    public boolean gastarMana(int custo) {
         if (mana >= custo) {
             mana -= custo;
-            System.out.println("-" + custo + " mana.");
+            return true;
         } else {
-            System.out.println("Mana insuficiente!");
+            return false;
         }
     }
 
-    public void recuperarMana(int quantidade) {
-        mana += quantidade;
-        System.out.println(nome + " recuperou " + quantidade + " de mana.");
+    public void recuperarMana() {
+        mana += manaRegen;
+        if (mana > manaMax) {
+            mana = manaMax;
+        }
     }
 
-    public void mostrarStatus() {
-        System.out.println("Status de " + nome);
-        System.out.println("Vida: " + vida);
-        System.out.println("Mana: " + mana);
-        System.out.println("Defesa:" + defesa);
+    //Status --------------------------------------------
+    public List<Integer> mostrarStatus() {
+        return List.of(vida, vidaMax, mana, manaMax, defesa, critico, dano, manaRegen);
+    }
+
+    public boolean personagemVivo() {
+        return vida > 0;
     }
 }
