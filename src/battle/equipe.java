@@ -4,7 +4,6 @@ import characters.Personagem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.Scanner;
 
 public class Equipe {
 
@@ -29,9 +28,27 @@ public class Equipe {
         return vivos;
     }
 
-    // EXPERIMENTAL -----------------------------------
-    public Personagem escolherAlvoJogador() {
+    public Personagem escolherAlvoAleatorio() {
         List<Personagem> alvosDisponiveis = getVivos();
+
+        if (alvosDisponiveis.isEmpty()) {
+            return null;
+        }
+
+        Random random = new Random();
+        int indiceSorteado = random.nextInt(alvosDisponiveis.size());
+
+        return alvosDisponiveis.get(indiceSorteado);
+    }
+
+    //Auxiliares ---------------------------------------
+    public boolean temVivos() {
+        return !getVivos().isEmpty();
+    }
+
+    // Desativado -----------------------------------
+    public Personagem escolherAlvoJogador() {
+        /*List<Personagem> alvosDisponiveis = getVivos();
 
         if (alvosDisponiveis.isEmpty()) {
             return null;
@@ -55,22 +72,8 @@ public class Equipe {
                 scanner.next();
             }
         }
-        scanner.close();
-
-        return alvosDisponiveis.get(escolha - 1);
+        return alvosDisponiveis.get(escolha - 1);*/
+        return escolherAlvoAleatorio();
     }
 
-    //FUNCIONAL -----------------------------------------
-    public Personagem escolherAlvoAleatorio() {
-        List<Personagem> alvosDisponiveis = getVivos();
-
-        if (alvosDisponiveis.isEmpty()) {
-            return null;
-        }
-
-        Random random = new Random();
-        int indiceSorteado = random.nextInt(alvosDisponiveis.size());
-
-        return alvosDisponiveis.get(indiceSorteado);
-    }
 }

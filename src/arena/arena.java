@@ -4,21 +4,25 @@ import battle.Batalha;
 import battle.Equipe;
 import characters.Personagem;
 
-
 public class Arena {
 
     private int round;
-    private int gameMode;
+    private final int gameMode;
     private int attackmode;  // 1 - PLayer | 2 - Aleatorio
+    private int delayMs;
+    private ArenaListener listener;
 
-    public Arena(int gameMode) {
-        this.round = 1; 
+    public Arena(int gameMode, int delayMs) {
+        this.round = 1;
         this.gameMode = gameMode; // 1 - PVP | 2 - PVE | 3 - EVE
+        this.delayMs = delayMs;
     }
 
     public void iniciar(Equipe equipeA, Equipe equipeB) {
-        while (equipeA.getVivos().size() != 0 && equipeB.getVivos().size() != 0) {
-            attackmode = 0;
+        while (equipeA.temVivos() && equipeB.temVivos()) {
+            if (listener != null) {
+                try { listener.onRoundStart(round, gameMode); } catch (Exception ignored) {}
+            }
 
             //Logica de turnos --------------------
             if (round % 2 == 1) {
@@ -32,19 +36,31 @@ public class Arena {
         }
 
         //Logica de vitoria --------------------
-        if (equipeA.getVivos().size() == 0) {
-            //Equipe B venceu
-        } else if (equipeB.getVivos().size() == 0) {
-            //Equipe A venceu
-        } else {
-            //Empate
+        Equipe ganhador = null;
+        boolean aVazio = !equipeA.temVivos();
+        boolean bVazio = !equipeB.temVivos();
+
+        if (aVazio && bVazio) {
+            ganhador = null;
+        } else if (bVazio) {
+            ganhador = equipeA;
+        } else if (aVazio) {
+            ganhador = equipeB;
+        }
+
+        if (listener != null) {
+            try {
+                listener.onFinish(ganhador);
+            } catch (Exception ex) {
+                System.err.println("[Arena] Listener Exception onFinish: " + ex.getMessage());
+                ex.printStackTrace();
+            }
         }
     }
 
     private void executarAtaques(Equipe atacantes, Equipe defensores, int attackmode) {
-
         for (Personagem membro : atacantes.getVivos()) {
-            if (defensores.getVivos().size() == 0) break;
+            if (!defensores.temVivos()) break;
 
             Personagem alvo;
 
@@ -53,7 +69,31 @@ public class Arena {
             } else {
                 alvo = defensores.escolherAlvoAleatorio();
             }
-            double dano = Batalha.atacar1v1(membro, alvo);
+
+            int dano = Batalha.atacar1v1(membro, alvo);
+            listener.onAttack(membro, alvo, dano);
+            sleepMs(delayMs);
+        }
+        
+    }
+
+    //Auxiliares ---------------------------------------
+    public void setDelayMs(int delayMs) {
+        this.delayMs = delayMs;
+        if (listener != null) {
+            try { listener.onDelayChanged(this.delayMs); } catch (Exception ignored) {}
+        }
+    }
+
+    public void setListener(ArenaListener l) {
+        this.listener = l;
+    }
+
+    private void sleepMs(int ms) {
+        try {
+            Thread.sleep(ms);
+        } catch (InterruptedException ex) {
+            Thread.currentThread().interrupt();
         }
     }
 }
