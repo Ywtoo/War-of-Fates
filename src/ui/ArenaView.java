@@ -177,14 +177,17 @@ public class ArenaView extends JPanel {
                 int centroY = y + linha * alturaCelula + alturaCelula / 2;
                 int raio = Math.min(larguraCelula, alturaCelula) / 3;
 
-                // cor base: vivo / morto. cores por tipo
-                Color corBase = p.personagemVivo() ? new Color(80, 160, 220) : Color.GRAY;
+                // cor base: delega a definição ao próprio personagem (encapsulado nas classes)
+                boolean ladoA = x < getWidth() / 2;
+                Color corBase;
                 if (p instanceof Guerreiro) {
-                    corBase = (x < getWidth() / 2) ? new Color(120, 200, 120) : new Color(200, 120, 120);
+                    corBase = Guerreiro.corPrincipal(ladoA);
                     if (!p.personagemVivo()) corBase = Color.DARK_GRAY;
                 } else if (p instanceof Mago) {
-                    corBase = (x < getWidth() / 2) ? new Color(160, 120, 220) : new Color(220, 160, 120);
+                    corBase = Mago.corPrincipal(ladoA);
                     if (!p.personagemVivo()) corBase = Color.DARK_GRAY;
+                } else {
+                    corBase = p.personagemVivo() ? new Color(80, 160, 220) : Color.GRAY;
                 }
 
                 // posição de desenho pode ser deslocada se o personagem estiver atacando (lunge)
@@ -252,12 +255,25 @@ public class ArenaView extends JPanel {
                     int vidaMax = st.get(1);
                     int larguraBarra = raio * 2;
                     int preenchimento = Math.max(2, (int) ((larguraBarra) * ((double) vida / Math.max(1, vidaMax))));
+                    // barra de vida
                     g.setColor(Color.RED);
                     g.fillRect(drawX - raio, drawY + raio + 4, larguraBarra, 6);
                     g.setColor(Color.GREEN);
                     g.fillRect(drawX - raio, drawY + raio + 4, preenchimento, 6);
                     g.setColor(Color.BLACK);
                     g.drawRect(drawX - raio, drawY + raio + 4, larguraBarra, 6);
+
+                    // barra de mana (abaixo da vida)
+                    int mana = st.get(2);
+                    int manaMax = st.get(3);
+                    int yMana = drawY + raio + 4 + 6 + 4;
+                    int preenchimentoMana = Math.max(2, (int) ((larguraBarra) * ((double) mana / Math.max(1, manaMax))));
+                    g.setColor(Color.LIGHT_GRAY);
+                    g.fillRect(drawX - raio, yMana, larguraBarra, 6);
+                    g.setColor(new Color(50, 120, 220));
+                    g.fillRect(drawX - raio, yMana, preenchimentoMana, 6);
+                    g.setColor(Color.BLACK);
+                    g.drawRect(drawX - raio, yMana, larguraBarra, 6);
                 } catch (Exception ignored) {}
             }
         }

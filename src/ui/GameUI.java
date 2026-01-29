@@ -54,10 +54,9 @@ public class GameUI {
         // inicializa velocidade da animação na visualização
         visualizadorArena.setAnimationSpeed(painelControles.getSpeed());
 
-        // usa TeamBuilder para configuração simples (Guerreiro, Mago)
-
-        // Temporizador para atualizar a UI periodicamente
-        int initDelay = Math.max(5, intervaloBaseMs / painelControles.getSpeed());
+        // Temporizador para atualizar a UI periodicamente (calcula delay a partir do fator de velocidade)
+        double initSpeed = painelControles.getSpeed();
+        int initDelay = Math.max(5, (int) (intervaloBaseMs / initSpeed));
         uiTimer = new Timer(initDelay, ev -> atualizar());
 
         janelaPrincipal.setVisible(true);
@@ -70,7 +69,8 @@ public class GameUI {
         painelControles.setControlsEnabled(false);
 
         int modo = painelControles.getSelectedMode();
-        int delay = Math.max(5, intervaloBaseMs / painelControles.getSpeed());
+        double speed = painelControles.getSpeed();
+        int delay = Math.max(5, (int) (intervaloBaseMs / speed));
         arena = new Arena(modo, delay);
         // registra listener para animações e mensagens na UI
         arena.setListener(new ArenaListener() {
@@ -121,7 +121,7 @@ public class GameUI {
         arenaThread.start();
 
         uiTimer.start();
-        painelConsole.append("[Arena] Arena iniciada (modo=" + modo + ")");
+        painelConsole.append("[Arena] Arena iniciada (modo=" + modo + ", speed=" + speed + "x)");
     }
 
     private void reiniciar() {
@@ -138,8 +138,8 @@ public class GameUI {
     }
 
     private void velocidadeAlterada() {
-        int velocidade = painelControles.getSpeed();
-        int delay = Math.max(5, intervaloBaseMs / velocidade);
+        double velocidade = painelControles.getSpeed();
+        int delay = Math.max(5, (int) (intervaloBaseMs / velocidade));
 
         if (uiTimer != null) uiTimer.setDelay(delay);
         if (arena != null) arena.setDelayMs(delay);
