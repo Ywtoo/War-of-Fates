@@ -5,10 +5,11 @@ import java.util.Random;
 
 public abstract class Personagem {
 
-    protected final String nome;
+    protected final String NOME;
     protected int vida, defesa, critico, dano; 
     protected int mana, manaRegen, custoMana;
-    protected final int vidaMax, manaMax;
+    protected final int VIDA_MAX, MANA_MAX;
+    protected final List<Integer> PREF_DE_ATAQUE;
     
     protected static final Random random = new Random();
     private boolean ultimoAtaqueCritico = false;
@@ -17,15 +18,16 @@ public abstract class Personagem {
         return random.nextInt(max - min + 1) + min;
     }
 
-    public Personagem(String nome, int vida,  int dano, int defesa, int critico, int mana, int custoMana, int manaRegen) {
-        this.nome = nome;
-        this.vida = vidaMax = vida;
-        this.mana = manaMax = mana;
+    public Personagem(String nome, int vida,  int dano, int defesa, int critico, int mana, int custoMana, int manaRegen, List<Integer> prefDeAtaque) {
+        this.NOME = nome;
+        this.vida = VIDA_MAX = vida;
+        this.mana = MANA_MAX = mana;
         this.dano = dano;
         this.custoMana = custoMana;
         this.manaRegen = manaRegen;
         this.defesa = defesa;
         this.critico = critico;
+        this.PREF_DE_ATAQUE = prefDeAtaque;
     }
 
     //Aqui tem os metodos de batalha ----------------------------
@@ -64,7 +66,7 @@ public abstract class Personagem {
     }
 
     public int atacar() {
-        if (mana < manaMax) {
+        if (mana < MANA_MAX) {
             recuperarMana();
         }
         int ataque = dano;
@@ -94,23 +96,44 @@ public abstract class Personagem {
 
     public void recuperarMana() {
         mana += manaRegen;
-        if (mana > manaMax) {
-            mana = manaMax;
+        if (mana > MANA_MAX) {
+            mana = MANA_MAX;
         }
+    }
+
+    //Metodo de ataque --------------------------------------------
+        //Escolhe linha alvo baseado nas preferencias do atacante caso tenha erro ele ataca linha da frente
+    public int escolherIndiceLinhaAlvo(List<List<Personagem>> inimigo) {
+        List<Integer> preferencias = this.getPREF_DE_ATAQUE();
+
+        if (preferencias.size() >= 2) {
+            int linhaAleatoria = random.nextInt(inimigo.size());
+            return linhaAleatoria;
+        } else {
+            try {
+                int indicePreferido = preferencias.get(0);
+                return indicePreferido;
+            } catch (IndexOutOfBoundsException e) {
+                return 0;
+            }
+        }
+
     }
 
     //Status --------------------------------------------
     public List<Integer> mostrarStatus() {
-        // Retorna uma lista com os status na ordem previsível:
-        // [vida, vidaMax, mana, manaMax, defesa, critico, dano, manaRegen]
-        return List.of(vida, vidaMax, mana, manaMax, defesa, critico, dano, manaRegen);
+        // Retorna uma lista com os status na ordem:
+        // [vida, VIDA_MAX, mana, MANA_MAX, defesa, critico, dano, manaRegen]
+        return List.of(vida, VIDA_MAX, mana, MANA_MAX, defesa, critico, dano, manaRegen);
     }
 
-    public String getNome() { return nome; }
+    public List<Integer> getPREF_DE_ATAQUE() { return PREF_DE_ATAQUE; }
+    public String getNOME() { return NOME; }
+    public String getNome() { return NOME; }
     public boolean personagemVivo() { return vida > 0; }
     public int getDefesa() { return defesa; }
     public int getVida() { return vida; }
-    public int getVidaMax() { return vidaMax; }
+    public int getVIDA_MAX() { return VIDA_MAX; }
     public int getDano() { return dano; }
     public boolean ultimoAtaqueCritico() { return ultimoAtaqueCritico; }
 }

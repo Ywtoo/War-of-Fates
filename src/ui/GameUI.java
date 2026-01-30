@@ -180,15 +180,48 @@ public class GameUI {
             int rangerBCount = configSimplesTimeB.size() > 2 ? configSimplesTimeB.get(2) : 0;
             int magoBCount = configSimplesTimeB.size() > 3 ? configSimplesTimeB.get(3) : 0;
 
-            for (int i = 0; i < tankACount; i++) { Tank t = new Tank("A-Tank-" + (i+1)); equipeTimeA.adicionar(t); personagensTimeA.add(t); }
-            for (int i = 0; i < guerreiroACount; i++) { Guerreiro g = new Guerreiro("A-Guerreiro-" + (i+1)); equipeTimeA.adicionar(g); personagensTimeA.add(g); }
-            for (int i = 0; i < rangerACount; i++) { Ranger r = new Ranger("A-Ranger-" + (i+1)); equipeTimeA.adicionar(r); personagensTimeA.add(r); }
-            for (int i = 0; i < magoACount; i++) { Mago m = new Mago("A-Mago-" + (i+1)); equipeTimeA.adicionar(m); personagensTimeA.add(m); }
+            // Cria grupos simples por classe e adiciona em ordem (0=Tank,1=Guerreiro,2=Ranger,3=Mago)
+            List<Personagem> groupTanksA = new ArrayList<>();
+            for (int i = 0; i < tankACount; i++) groupTanksA.add(new Tank("A-Tank-" + (i+1)));
+            equipeTimeA.adicionarClasse(groupTanksA, 0);
+            personagensTimeA.addAll(groupTanksA);
 
-            for (int i = 0; i < tankBCount; i++) { Tank t = new Tank("B-Tank-" + (i+1)); equipeTimeB.adicionar(t); personagensTimeB.add(t); }
-            for (int i = 0; i < guerreiroBCount; i++) { Guerreiro g = new Guerreiro("B-Guerreiro-" + (i+1)); equipeTimeB.adicionar(g); personagensTimeB.add(g); }
-            for (int i = 0; i < rangerBCount; i++) { Ranger r = new Ranger("B-Ranger-" + (i+1)); equipeTimeB.adicionar(r); personagensTimeB.add(r); }
-            for (int i = 0; i < magoBCount; i++) { Mago m = new Mago("B-Mago-" + (i+1)); equipeTimeB.adicionar(m); personagensTimeB.add(m); }
+            List<Personagem> groupGuerreirosA = new ArrayList<>();
+            for (int i = 0; i < guerreiroACount; i++) groupGuerreirosA.add(new Guerreiro("A-Guerreiro-" + (i+1)));
+            equipeTimeA.adicionarClasse(groupGuerreirosA, 1);
+            personagensTimeA.addAll(groupGuerreirosA);
+
+            List<Personagem> groupRangersA = new ArrayList<>();
+            for (int i = 0; i < rangerACount; i++) groupRangersA.add(new Ranger("A-Ranger-" + (i+1)));
+            equipeTimeA.adicionarClasse(groupRangersA, 2);
+            personagensTimeA.addAll(groupRangersA);
+
+            List<Personagem> groupMagosA = new ArrayList<>();
+            for (int i = 0; i < magoACount; i++) groupMagosA.add(new Mago("A-Mago-" + (i+1)));
+            equipeTimeA.adicionarClasse(groupMagosA, 3);
+            personagensTimeA.addAll(groupMagosA);
+
+            // Team B
+            List<Personagem> groupTanksB = new ArrayList<>();
+            for (int i = 0; i < tankBCount; i++) groupTanksB.add(new Tank("B-Tank-" + (i+1)));
+            equipeTimeB.adicionarClasse(groupTanksB, 0);
+            personagensTimeB.addAll(groupTanksB);
+
+            List<Personagem> groupGuerreirosB = new ArrayList<>();
+            for (int i = 0; i < guerreiroBCount; i++) groupGuerreirosB.add(new Guerreiro("B-Guerreiro-" + (i+1)));
+            equipeTimeB.adicionarClasse(groupGuerreirosB, 1);
+            personagensTimeB.addAll(groupGuerreirosB);
+
+            List<Personagem> groupRangersB = new ArrayList<>();
+            for (int i = 0; i < rangerBCount; i++) groupRangersB.add(new Ranger("B-Ranger-" + (i+1)));
+            equipeTimeB.adicionarClasse(groupRangersB, 2);
+            personagensTimeB.addAll(groupRangersB);
+
+            List<Personagem> groupMagosB = new ArrayList<>();
+            for (int i = 0; i < magoBCount; i++) groupMagosB.add(new Mago("B-Mago-" + (i+1)));
+            equipeTimeB.adicionarClasse(groupMagosB, 3);
+            personagensTimeB.addAll(groupMagosB);
+
         } else {
             // fallback: sem configuração, times ficam vazios (use Config Teams)
         }

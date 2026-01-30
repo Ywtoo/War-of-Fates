@@ -15,7 +15,8 @@ public class Mago extends Personagem {
                 0,
                 20 + statusAleatorio(5, 10),
                 5 + statusAleatorio(2, 2),
-                3 + statusAleatorio(0, 5)
+                3 + statusAleatorio(0, 5),
+                List.of(0, -1) // Linhas de ataque preferidas
         );
     }
 
