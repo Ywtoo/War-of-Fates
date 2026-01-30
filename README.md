@@ -1,4 +1,4 @@
-# War of Fates — v0.1
+# War of Fates — v0.2
 
 Resumo  
 Pequeno jogo de batalha por turnos com visualização em Swing. Projeto POO (Programação Orientada a Objetos) desenvolvido como trabalho da disciplina — demonstra encapsulamento, herança, polimorfismo e separação de responsabilidades (lógica em `Arena`, UI via listeners).
@@ -24,7 +24,7 @@ run.bat
 ```
 - Manual:
 ```bat
-javac -d out src\characters\*.java src\battle\*.java src\arena\*.java src\ui\*.java Main.java
+javac -d out src\characters\*.java src\battle\*.java src\arena\*.java src\ui\*.java src\Main.java
 java -cp out Main
 ```
 
