@@ -6,6 +6,9 @@ import characters.Personagem;
 public interface ArenaListener {
     void onAttack(Personagem atacante, Personagem alvo, int dano);
 
+    // Notifica ataque crítico (opcional)
+    default void onCriticalAttack(Personagem atacante, Personagem alvo, int dano) {}
+
     // Notifica fim da batalha (pode ser null em caso de empate)
     default void onFinish(Equipe ganhador) {}
 

@@ -5,15 +5,16 @@ import java.util.Random;
 
 public abstract class Personagem {
 
-    private final String nome;
-    private int vida, defesa, critico, dano; 
-    private int mana, manaRegen, custoMana;
-    private final int vidaMax, manaMax;
+    protected final String nome;
+    protected int vida, defesa, critico, dano; 
+    protected int mana, manaRegen, custoMana;
+    protected final int vidaMax, manaMax;
     
     protected static final Random random = new Random();
+    private boolean ultimoAtaqueCritico = false;
 
-    protected static int statusAleatorio(int valor) {
-        return random.nextInt(valor * 2 + 1) - valor;
+    protected static int statusAleatorio(int min, int max) {
+        return random.nextInt(max - min + 1) + min;
     }
 
     public Personagem(String nome, int vida,  int dano, int defesa, int critico, int mana, int custoMana, int manaRegen) {
@@ -68,21 +69,20 @@ public abstract class Personagem {
         if (mana < manaMax) {
             recuperarMana();
         }
-        if ((MathRandom(100)) < critico){
-            dano = dano * 2;
+        int ataque = dano;
+        if ((random.nextInt(101)) < critico) {
+            ataque = ataque * 2;
+            ultimoAtaqueCritico = true;
+        } else {
+            ultimoAtaqueCritico = false;
         }
-        //TODO: implementar logica de ataque com critico
-        return dano;
+        return ataque;
     }
 
     //Magias --------------------------------------------
     public List<Integer> usarMagia() {
-        boolean ok = gastarMana(custoMana);
-        if (ok) {
-            return List.of(dano, 1); // 1 = sucesso
-        } else {
-            return List.of(0, 0); // 0 = falha
-        }
+        //Personagens sem ataque magico sempre retornam false
+            return List.of(0, 0); 
     }
 
     public boolean gastarMana(int custo) {
@@ -108,16 +108,11 @@ public abstract class Personagem {
         return List.of(vida, vidaMax, mana, manaMax, defesa, critico, dano, manaRegen);
     }
 
-    public String getNome() {
-        return nome;
-    }
-
-    public boolean personagemVivo() {
-        return vida > 0;
-    }
-
+    public String getNome() { return nome; }
+    public boolean personagemVivo() { return vida > 0; }
     public int getDefesa() { return defesa; }
     public int getVida() { return vida; }
     public int getVidaMax() { return vidaMax; }
     public int getDano() { return dano; }
+    public boolean ultimoAtaqueCritico() { return ultimoAtaqueCritico; }
 }

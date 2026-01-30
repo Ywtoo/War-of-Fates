@@ -71,7 +71,14 @@ public class Arena {
             }
 
             int dano = Batalha.atacar1v1(membro, alvo);
-            listener.onAttack(membro, alvo, dano);
+            if (listener != null) {
+                try { listener.onAttack(membro, alvo, dano); } catch (Exception ignored) {}
+                try {
+                    if (membro.ultimoAtaqueCritico()) {
+                        listener.onCriticalAttack(membro, alvo, dano);
+                    }
+                } catch (Exception ignored) {}
+            }
             sleepMs(delayMs);
         }
         

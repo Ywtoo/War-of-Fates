@@ -1,8 +1,9 @@
 package ui;
 
-import characters.Personagem;
 import characters.Guerreiro;
 import characters.Mago;
+import characters.Personagem;
+import characters.Ranger;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ public class ArenaView extends JPanel {
 
     // Configuração de desenho/animação (valores base)
     private static final int MARGEM = 40;
+    private static final Color COR_MORTE = new Color(40, 40, 40);
     private int baseDuracaoAtaqueMs = 450;
     private int baseDuracaoPopupMs = 800;
     private static final int MIN_DESLOCAMENTO = 16;
@@ -65,12 +67,22 @@ public class ArenaView extends JPanel {
         private final long inicioMs;
         private final int dano;
         private final int duracaoMs;
+        private final boolean critico;
 
         PopupDano(Personagem alvo, int dano, int duracaoMs) {
             this.alvo = alvo;
             this.dano = dano;
             this.duracaoMs = duracaoMs;
             this.inicioMs = System.currentTimeMillis();
+            this.critico = false;
+        }
+
+        PopupDano(Personagem alvo, int dano, int duracaoMs, boolean critico) {
+            this.alvo = alvo;
+            this.dano = dano;
+            this.duracaoMs = duracaoMs;
+            this.inicioMs = System.currentTimeMillis();
+            this.critico = critico;
         }
 
         double progresso() {
@@ -81,6 +93,7 @@ public class ArenaView extends JPanel {
 
         Personagem getAlvo() { return alvo; }
         int getDano() { return dano; }
+        boolean isCritico() { return critico; }
     }
 
     private final java.util.List<AnimacaoAtaque> ataquesAtivos = new ArrayList<>();
@@ -97,6 +110,14 @@ public class ArenaView extends JPanel {
         int duracaoPopup = Math.max(60, (int) (baseDuracaoPopupMs / Math.max(0.1, velocidadeFator)));
         ataquesAtivos.add(new AnimacaoAtaque(atacante, alvo, dano, duracaoAtaque));
         avisosDano.add(new PopupDano(alvo, dano, duracaoPopup));
+        repaint();
+    }
+
+    public void iniciarAnimacaoAtaqueCritico(Personagem atacante, Personagem alvo, int dano) {
+        int duracaoAtaque = Math.max(60, (int) (baseDuracaoAtaqueMs / Math.max(0.1, velocidadeFator)));
+        int duracaoPopup = Math.max(80, (int) (baseDuracaoPopupMs * 1.2 / Math.max(0.1, velocidadeFator)));
+        ataquesAtivos.add(new AnimacaoAtaque(atacante, alvo, dano, duracaoAtaque));
+        avisosDano.add(new PopupDano(alvo, dano, duracaoPopup, true));
         repaint();
     }
 
@@ -129,9 +150,14 @@ public class ArenaView extends JPanel {
             // deslocamento vertical: sobe até 20 pixels
             int deslocY = (int) (-20 * prog);
 
-            g.setColor(new Color(220, 40, 40, Math.max(30, opacidade)));
-            g.setFont(g.getFont().deriveFont(Font.BOLD, 14f));
-            String texto = "-" + popup.getDano();
+            if (popup.isCritico()) {
+                g.setColor(new Color(255, 200, 40, Math.max(50, opacidade)));
+                g.setFont(g.getFont().deriveFont(Font.BOLD, 20f));
+            } else {
+                g.setColor(new Color(220, 40, 40, Math.max(30, opacidade)));
+                g.setFont(g.getFont().deriveFont(Font.BOLD, 14f));
+            }
+            String texto = (popup.isCritico() ? "CRIT! -" : "-") + popup.getDano();
             FontMetrics fm = g.getFontMetrics();
             int larguraTexto = fm.stringWidth(texto);
 
@@ -182,12 +208,15 @@ public class ArenaView extends JPanel {
                 Color corBase;
                 if (p instanceof Guerreiro) {
                     corBase = Guerreiro.corPrincipal(ladoA);
-                    if (!p.personagemVivo()) corBase = Color.DARK_GRAY;
+                    if (!p.personagemVivo()) corBase = COR_MORTE;
                 } else if (p instanceof Mago) {
                     corBase = Mago.corPrincipal(ladoA);
-                    if (!p.personagemVivo()) corBase = Color.DARK_GRAY;
+                    if (!p.personagemVivo()) corBase = COR_MORTE;
+                } else if (p instanceof Ranger) {
+                    corBase = Ranger.corPrincipal(ladoA);
+                    if (!p.personagemVivo()) corBase = COR_MORTE;
                 } else {
-                    corBase = p.personagemVivo() ? new Color(80, 160, 220) : Color.GRAY;
+                    corBase = p.personagemVivo() ? new Color(80, 160, 220) : COR_MORTE;
                 }
 
                 // posição de desenho pode ser deslocada se o personagem estiver atacando (lunge)

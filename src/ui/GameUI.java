@@ -6,6 +6,7 @@ import battle.Equipe;
 import characters.Guerreiro;
 import characters.Mago;
 import characters.Personagem;
+import characters.Ranger;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,6 +88,18 @@ public class GameUI {
             }
 
             @Override
+            public void onCriticalAttack(Personagem att, Personagem tgt, int dmg) {
+                SwingUtilities.invokeLater(() -> {
+                    String extra = "";
+                    try {
+                        extra = " (atk=" + att.getDano() + " def=" + (tgt!=null?tgt.getDefesa():0) + ")";
+                    } catch (Exception ignored) {}
+                    painelConsole.append("[CRÍTICO] " + att.getNome() + " -> " + (tgt!=null?tgt.getNome():"?") + " dmg=" + dmg + extra);
+                    visualizadorArena.iniciarAnimacaoAtaqueCritico(att, tgt, dmg);
+                });
+            }
+
+            @Override
             public void onRoundStart(int round, int gameMode) {
                 SwingUtilities.invokeLater(() -> painelConsole.append("\n=== [ARENA] Começando round " + round + " (modo=" + gameMode + ") ==="));
             }
@@ -156,16 +169,20 @@ public class GameUI {
         personagensTimeB = new ArrayList<>();
 
         if (configSimplesTimeA != null && configSimplesTimeB != null) {
-            //índice: 0 = Guerreiro, 1 = Mago
-            int gwA = configSimplesTimeA.size() > 0 ? configSimplesTimeA.get(0) : 0;
-            int mgA = configSimplesTimeA.size() > 1 ? configSimplesTimeA.get(1) : 0;
-            int gwB = configSimplesTimeB.size() > 0 ? configSimplesTimeB.get(0) : 0;
-            int mgB = configSimplesTimeB.size() > 1 ? configSimplesTimeB.get(1) : 0;
+            //índice: 0 = Guerreiro, 1 = Mago, 2 = Ranger
+            int guerreiroACount = configSimplesTimeA.size() > 0 ? configSimplesTimeA.get(0) : 0;
+            int magoACount = configSimplesTimeA.size() > 1 ? configSimplesTimeA.get(1) : 0;
+            int rangerACount = configSimplesTimeA.size() > 2 ? configSimplesTimeA.get(2) : 0;
+            int guerreiroBCount = configSimplesTimeB.size() > 0 ? configSimplesTimeB.get(0) : 0;
+            int magoBCount = configSimplesTimeB.size() > 1 ? configSimplesTimeB.get(1) : 0;
+            int rangerBCount = configSimplesTimeB.size() > 2 ? configSimplesTimeB.get(2) : 0;
 
-            for (int i = 0; i < gwA; i++) { Guerreiro g = new Guerreiro("A-Guerreiro-" + (i+1)); equipeTimeA.adicionar(g); personagensTimeA.add(g); }
-            for (int i = 0; i < mgA; i++) { Mago m = new Mago("A-Mago-" + (i+1)); equipeTimeA.adicionar(m); personagensTimeA.add(m); }
-            for (int i = 0; i < gwB; i++) { Guerreiro g = new Guerreiro("B-Guerreiro-" + (i+1)); equipeTimeB.adicionar(g); personagensTimeB.add(g); }
-            for (int i = 0; i < mgB; i++) { Mago m = new Mago("B-Mago-" + (i+1)); equipeTimeB.adicionar(m); personagensTimeB.add(m); }
+            for (int i = 0; i < guerreiroACount; i++) { Guerreiro g = new Guerreiro("A-Guerreiro-" + (i+1)); equipeTimeA.adicionar(g); personagensTimeA.add(g); }
+            for (int i = 0; i < magoACount; i++) { Mago m = new Mago("A-Mago-" + (i+1)); equipeTimeA.adicionar(m); personagensTimeA.add(m); }
+            for (int i = 0; i < rangerACount; i++) { Ranger r = new Ranger("A-Ranger-" + (i+1)); equipeTimeA.adicionar(r); personagensTimeA.add(r); }
+            for (int i = 0; i < guerreiroBCount; i++) { Guerreiro g = new Guerreiro("B-Guerreiro-" + (i+1)); equipeTimeB.adicionar(g); personagensTimeB.add(g); }
+            for (int i = 0; i < magoBCount; i++) { Mago m = new Mago("B-Mago-" + (i+1)); equipeTimeB.adicionar(m); personagensTimeB.add(m); }
+            for (int i = 0; i < rangerBCount; i++) { Ranger r = new Ranger("B-Ranger-" + (i+1)); equipeTimeB.adicionar(r); personagensTimeB.add(r); }
         } else {
             // fallback: sem configuração, times ficam vazios (use Config Teams)
         }
@@ -181,7 +198,7 @@ public class GameUI {
         if (dlg.isConfirmed()) {
             configSimplesTimeA = dlg.getCountsForA();
             configSimplesTimeB = dlg.getCountsForB();
-            painelConsole.append("Configuração simples aplicada (Guerreiro, Mago)");
+            painelConsole.append("Configuração simples aplicada (Guerreiro, Mago, Ranger)");
         } else {
             painelConsole.append("Configuração de times cancelada");
         }
