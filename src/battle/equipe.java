@@ -7,37 +7,63 @@ import java.util.Random;
 
 public class Equipe {
 
-    private final List<Personagem> personagens;
+    private final List<List<Personagem>> personagens;
+    private static final Random random = new Random();
 
     public Equipe() {
         this.personagens = new ArrayList<>();
     }
 
-    public void adicionar(Personagem personagem) {
-        this.personagens.add(personagem);
+    public void adicionarClasse(List<Personagem> grupo, int indice) {
+        if (indice < 0) {
+            return;
+        }
+
+        List<Personagem> copia;
+        if (grupo == null || grupo.isEmpty()) {
+            copia = new ArrayList<>();
+        } else {
+            copia = new ArrayList<>(grupo);
+        }
+
+        while (this.personagens.size() <= indice) {
+            this.personagens.add(new ArrayList<>());
+        }
+        this.personagens.set(indice, copia);
     }
 
-    public List<Personagem> getVivos() {
-        List<Personagem> vivos = new ArrayList<>();
+    public List<List<Personagem>> getVivos() {
+        List<List<Personagem>> vivos = new ArrayList<>();
 
-        for (Personagem p : this.personagens) {
-            if (p.personagemVivo()) {
-                vivos.add(p);
+        for (List<Personagem> linha : this.personagens) {
+            if (linha == null) {
+                continue;
+            }
+            List<Personagem> linhaVivos = new ArrayList<>();
+
+            for (Personagem p : linha) {
+                if (p != null && p.personagemVivo()) {
+                    linhaVivos.add(p);
+                }
+            }
+
+            if (!linhaVivos.isEmpty()) {
+                vivos.add(linhaVivos);
             }
         }
         return vivos;
     }
 
-    public Personagem escolherAlvoAleatorio() {
-        List<Personagem> alvosDisponiveis = getVivos();
-
-        if (alvosDisponiveis.isEmpty()) {
+    public Personagem escolherAlvoAleatorio(int linha) {
+        List<List<Personagem>> linhasVivas = getVivos();
+        if (linhasVivas == null || linha < 0 || linha >= linhasVivas.size()) {
             return null;
         }
-
-        Random random = new Random();
+        List<Personagem> alvosDisponiveis = linhasVivas.get(linha);
+        if (alvosDisponiveis == null || alvosDisponiveis.isEmpty()) {
+            return null;
+        }
         int indiceSorteado = random.nextInt(alvosDisponiveis.size());
-
         return alvosDisponiveis.get(indiceSorteado);
     }
 
@@ -47,7 +73,7 @@ public class Equipe {
     }
 
     // Desativado -----------------------------------
-    public Personagem escolherAlvoJogador() {
+    public Personagem escolherAlvoJogador(int linha) {
         /*List<Personagem> alvosDisponiveis = getVivos();
 
         if (alvosDisponiveis.isEmpty()) {
@@ -73,7 +99,7 @@ public class Equipe {
             }
         }
         return alvosDisponiveis.get(escolha - 1);*/
-        return escolherAlvoAleatorio();
+        return escolherAlvoAleatorio(linha);
     }
 
 }

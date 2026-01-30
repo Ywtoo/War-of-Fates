@@ -1,6 +1,7 @@
 package characters;
 
 import java.awt.Color;
+import java.util.List;
 
 public class Guerreiro extends Personagem {
 
@@ -14,13 +15,14 @@ public class Guerreiro extends Personagem {
                 10 + statusAleatorio(-10, 5),
                 0,
                 0,
-                0
+                0,
+                List.of(0) // Linhas de ataque preferidas
         );
     }
 
     // Cores padrão para desenho (encapsulado na classe)
     public static Color corPrincipal(boolean ladoA) {
-        return ladoA ? new Color(200, 200, 200) : new Color(200, 170, 170);
+        return ladoA ? new Color(200, 200, 200) : new Color(200, 150, 150);
     }
 
     public static Color corAlternativa() {

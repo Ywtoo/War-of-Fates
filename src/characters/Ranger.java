@@ -1,6 +1,7 @@
 package characters;
 
 import java.awt.Color;
+import java.util.List;
 
 public class Ranger extends Personagem {
 
@@ -14,7 +15,8 @@ public class Ranger extends Personagem {
                 15 + statusAleatorio(0, 30),
                 0,
                 0,
-                0
+                0,
+                List.of(0) // Linhas de ataque preferidas
         );
     }
 
@@ -22,7 +24,7 @@ public class Ranger extends Personagem {
 
 
 public static Color corPrincipal(boolean ladoA) {
-        return ladoA ? new Color(100, 180, 120) : new Color(180, 120, 120);
+        return ladoA ? new Color(100, 180, 120) : new Color(140, 180, 120);
     }
 
     public static Color corAlternativa() {

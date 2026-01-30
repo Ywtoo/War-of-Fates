@@ -3,6 +3,7 @@ package arena;
 import battle.Batalha;
 import battle.Equipe;
 import characters.Personagem;
+import java.util.List;
 
 public class Arena {
 
@@ -21,7 +22,10 @@ public class Arena {
     public void iniciar(Equipe equipeA, Equipe equipeB) {
         while (equipeA.temVivos() && equipeB.temVivos()) {
             if (listener != null) {
-                try { listener.onRoundStart(round, gameMode); } catch (Exception ignored) {}
+                try {
+                    listener.onRoundStart(round, gameMode);
+                } catch (Exception ignored) {
+                }
             }
 
             //Logica de turnos --------------------
@@ -53,42 +57,54 @@ public class Arena {
                 listener.onFinish(ganhador);
             } catch (Exception ex) {
                 System.err.println("[Arena] Listener Exception onFinish: " + ex.getMessage());
-                ex.printStackTrace();
             }
         }
     }
 
     private void executarAtaques(Equipe atacantes, Equipe defensores, int attackmode) {
-        for (Personagem membro : atacantes.getVivos()) {
-            if (!defensores.temVivos()) break;
+        for (List<Personagem> linha : atacantes.getVivos()) {
+            for (Personagem membro : linha) {
+                if (!defensores.temVivos()) {
+                    break;
+                }
 
-            Personagem alvo;
+                Personagem alvo;
+                int linhaAlvo = membro.escolherIndiceLinhaAlvo(defensores.getVivos());
 
-            if (attackmode == 1) {
-                alvo = defensores.escolherAlvoJogador();
-            } else {
-                alvo = defensores.escolherAlvoAleatorio();
-            }
+                if (attackmode == 1) {
 
-            int dano = Batalha.atacar1v1(membro, alvo);
-            if (listener != null) {
-                try { listener.onAttack(membro, alvo, dano); } catch (Exception ignored) {}
-                try {
-                    if (membro.ultimoAtaqueCritico()) {
-                        listener.onCriticalAttack(membro, alvo, dano);
+                    alvo = defensores.escolherAlvoJogador(linhaAlvo);
+                } else {
+                    alvo = defensores.escolherAlvoAleatorio(linhaAlvo);
+                }
+
+                int dano = Batalha.atacar1v1(membro, alvo);
+                if (listener != null) {
+                    try {
+                        listener.onAttack(membro, alvo, dano);
+                    } catch (Exception ignored) {
                     }
-                } catch (Exception ignored) {}
+                    try {
+                        if (membro.ultimoAtaqueCritico()) {
+                            listener.onCriticalAttack(membro, alvo, dano);
+                        }
+                    } catch (Exception ignored) {
+                    }
+                }
+                sleepMs(delayMs);
             }
-            sleepMs(delayMs);
         }
-        
-    }
 
+    }
     //Auxiliares ---------------------------------------
+
     public void setDelayMs(int delayMs) {
         this.delayMs = delayMs;
         if (listener != null) {
-            try { listener.onDelayChanged(this.delayMs); } catch (Exception ignored) {}
+            try {
+                listener.onDelayChanged(this.delayMs);
+            } catch (Exception ignored) {
+            }
         }
     }
 

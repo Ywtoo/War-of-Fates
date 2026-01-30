@@ -1,6 +1,7 @@
 package characters;
 
 import java.awt.Color;
+import java.util.List;
 
 public class Tank extends Personagem {
 
@@ -14,7 +15,8 @@ public class Tank extends Personagem {
                 10 + statusAleatorio(-10, 15),
                 10,
                 10,
-                5 + statusAleatorio(-2, 1)
+                5 + statusAleatorio(-2, 1),
+                List.of(0) // Linhas de ataque preferidas
         );
     }
 
@@ -69,7 +71,7 @@ public class Tank extends Personagem {
 
     // Cores padrão para desenho (encapsulado na classe)
     public static Color corPrincipal(boolean ladoA) {
-        return ladoA ? new Color(200, 200, 200) : new Color(200, 170, 170);
+        return ladoA ? new Color(100, 100, 120) : new Color(120, 100, 100);
     }
 
     public static Color corAlternativa() {
