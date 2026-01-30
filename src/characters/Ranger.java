@@ -10,9 +10,9 @@ public class Ranger extends Personagem {
         super(
                 nome,
                 12 + statusAleatorio(-2, 2),
-                7 + statusAleatorio(-2, 7),
+                7 + statusAleatorio(-2, 5),
                 1 + statusAleatorio(0, 2),
-                15 + statusAleatorio(0, 30),
+                10 + statusAleatorio(0, 25),
                 0,
                 0,
                 0,

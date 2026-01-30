@@ -10,7 +10,7 @@ public class Mago extends Personagem {
         super(
                 nome,
                 10 + statusAleatorio(-1, 3),
-                5 + statusAleatorio(-2, 4),
+                8 + statusAleatorio(-2, 4),
                 2 + statusAleatorio(0, 1),
                 0,
                 20 + statusAleatorio(5, 10),
