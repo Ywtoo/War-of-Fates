@@ -16,7 +16,7 @@ public class Ranger extends Personagem {
                 0,
                 0,
                 0,
-                List.of(0) // Linhas de ataque preferidas
+                List.of(0, -1) // Linhas de ataque preferidas
         );
     }
 

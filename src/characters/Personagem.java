@@ -107,7 +107,10 @@ public abstract class Personagem {
         List<Integer> preferencias = this.getPREF_DE_ATAQUE();
 
         if (preferencias.size() >= 2) {
-            int linhaAleatoria = random.nextInt(inimigo.size());
+            int linhaAleatoria = preferencias.get(random.nextInt(preferencias.size()));
+            if (linhaAleatoria < 0) {
+                linhaAleatoria = inimigo.size() + linhaAleatoria;
+            }
             return linhaAleatoria;
         } else {
             try {

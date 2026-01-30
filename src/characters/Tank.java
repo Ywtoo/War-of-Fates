@@ -15,7 +15,8 @@ public class Tank extends Personagem {
                 10 + statusAleatorio(-10, 15),
                 10,
                 10,
-                3 + statusAleatorio(-2, 1)
+                3 + statusAleatorio(-2, 1),
+                List.of(0)
         );
     }
 
