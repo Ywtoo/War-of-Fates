@@ -68,6 +68,9 @@ public abstract class Personagem {
         if (mana < manaMax) {
             recuperarMana();
         }
+        if ((MathRandom(100)) < critico){
+            dano = dano * 2;
+        }
         //TODO: implementar logica de ataque com critico
         return dano;
     }
