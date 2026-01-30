@@ -30,7 +30,6 @@ public abstract class Personagem {
 
     //Aqui tem os metodos de batalha ----------------------------
     public int receberDano(int dano) {
-        int vidaAntes = vida;
         int danoTotal = dano - defesa;
         if (danoTotal < 0) {
             danoTotal = 0;
@@ -48,7 +47,6 @@ public abstract class Personagem {
     public int receberDano(int dano, boolean isMagico) {
         if (isMagico) {
             //Dano Magico
-            int vidaAntes = vida;
             if (dano < 0) {
                 dano = 0;
             }

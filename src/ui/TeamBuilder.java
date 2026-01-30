@@ -7,12 +7,14 @@ import javax.swing.*;
 
 // Diálogo bem simples: retorna duas listas de contagens [guerreiros, magos] para Team A e Team B
 public class TeamBuilder extends JDialog {
-    private final JSpinner guerreiroA = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-    private final JSpinner magoA = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-    private final JSpinner rangerA = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-    private final JSpinner guerreiroB = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-    private final JSpinner magoB = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
-    private final JSpinner rangerB = new JSpinner(new SpinnerNumberModel(0, 0, 200, 1));
+    // order: 0=Tank, 1=Guerreiro, 2=Ranger, 3=Mago
+    private final String[] classes = new String[] { "Tank", "Guerreiros", "Rangers", "Magos" };
+
+    private final JSlider[] slidersA = new JSlider[4];
+    private final JSpinner[] spinnersA = new JSpinner[4];
+    private final JSlider[] slidersB = new JSlider[4];
+    private final JSpinner[] spinnersB = new JSpinner[4];
+
     private boolean confirmed = false;
 
     public TeamBuilder(Window owner) {
@@ -23,22 +25,36 @@ public class TeamBuilder extends JDialog {
     }
 
     private void initUI() {
-        JPanel p = new JPanel(new GridLayout(4, 3, 6, 6));
+        JPanel p = new JPanel(new GridLayout(classes.length + 1, 3, 8, 8));
+        p.setBorder(BorderFactory.createEmptyBorder(8, 12, 8, 12));
+
         p.add(new JLabel("Classe"));
         p.add(new JLabel("Team A"));
         p.add(new JLabel("Team B"));
 
-        p.add(new JLabel("Guerreiros"));
-        p.add(guerreiroA);
-        p.add(guerreiroB);
+        int max = 200;
+        for (int i = 0; i < classes.length; i++) {
+            p.add(new JLabel(classes[i]));
 
-        p.add(new JLabel("Magos"));
-        p.add(magoA);
-        p.add(magoB);
+            JSlider sA = new JSlider(0, max, 0);
+            JSpinner spA = new JSpinner(new SpinnerNumberModel(0, 0, max, 1));
+            synchronize(sA, spA);
+            JPanel cellA = new JPanel(new BorderLayout(6, 0));
+            cellA.add(sA, BorderLayout.CENTER);
+            cellA.add(spA, BorderLayout.EAST);
+            p.add(cellA);
 
-        p.add(new JLabel("Rangers"));
-        p.add(rangerA);
-        p.add(rangerB);
+            JSlider sB = new JSlider(0, max, 0);
+            JSpinner spB = new JSpinner(new SpinnerNumberModel(0, 0, max, 1));
+            synchronize(sB, spB);
+            JPanel cellB = new JPanel(new BorderLayout(6, 0));
+            cellB.add(sB, BorderLayout.CENTER);
+            cellB.add(spB, BorderLayout.EAST);
+            p.add(cellB);
+
+            slidersA[i] = sA; spinnersA[i] = spA;
+            slidersB[i] = sB; spinnersB[i] = spB;
+        }
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton ok = new JButton("OK");
@@ -53,21 +69,32 @@ public class TeamBuilder extends JDialog {
         cc.add(buttons, BorderLayout.SOUTH);
     }
 
+    private void synchronize(JSlider s, JSpinner sp) {
+        s.addChangeListener(e -> {
+            int v = s.getValue();
+            Object cur = sp.getValue();
+            if (cur instanceof Integer && ((Integer) cur) != v) sp.setValue(v);
+        });
+        sp.addChangeListener(e -> {
+            Object cur = sp.getValue();
+            if (cur instanceof Integer) {
+                int v = (Integer) cur;
+                if (s.getValue() != v) s.setValue(v);
+            }
+        });
+    }
+
     public boolean isConfirmed() { return confirmed; }
 
     public List<Integer> getCountsForA() {
         List<Integer> out = new ArrayList<>();
-        out.add((Integer) guerreiroA.getValue());
-        out.add((Integer) magoA.getValue());
-        out.add((Integer) rangerA.getValue());
+        for (int i = 0; i < slidersA.length; i++) out.add(slidersA[i].getValue());
         return out;
     }
 
     public List<Integer> getCountsForB() {
         List<Integer> out = new ArrayList<>();
-        out.add((Integer) guerreiroB.getValue());
-        out.add((Integer) magoB.getValue());
-        out.add((Integer) rangerB.getValue());
+        for (int i = 0; i < slidersB.length; i++) out.add(slidersB[i].getValue());
         return out;
     }
 }

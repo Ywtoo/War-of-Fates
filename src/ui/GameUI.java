@@ -7,6 +7,7 @@ import characters.Guerreiro;
 import characters.Mago;
 import characters.Personagem;
 import characters.Ranger;
+import characters.Tank;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,7 @@ public class GameUI {
     private Equipe equipeTimeB;
     private List<Personagem> personagensTimeA;
     private List<Personagem> personagensTimeB;
-    // configuração simples: lista de inteiros onde index 0 = Guerreiro, index 1 = Mago
+    // configuração simples: lista de inteiros onde index 0 = Tank, 1 = Guerreiro, 2 = Ranger, 3 = Mago
     private java.util.List<Integer> configSimplesTimeA = null;
     private java.util.List<Integer> configSimplesTimeB = null;
 
@@ -169,20 +170,25 @@ public class GameUI {
         personagensTimeB = new ArrayList<>();
 
         if (configSimplesTimeA != null && configSimplesTimeB != null) {
-            //índice: 0 = Guerreiro, 1 = Mago, 2 = Ranger
-            int guerreiroACount = configSimplesTimeA.size() > 0 ? configSimplesTimeA.get(0) : 0;
-            int magoACount = configSimplesTimeA.size() > 1 ? configSimplesTimeA.get(1) : 0;
+            //índice: 0 = Tank, 1 = Guerreiro, 2 = Ranger, 3 = Mago
+            int tankACount = configSimplesTimeA.size() > 0 ? configSimplesTimeA.get(0) : 0;
+            int guerreiroACount = configSimplesTimeA.size() > 1 ? configSimplesTimeA.get(1) : 0;
             int rangerACount = configSimplesTimeA.size() > 2 ? configSimplesTimeA.get(2) : 0;
-            int guerreiroBCount = configSimplesTimeB.size() > 0 ? configSimplesTimeB.get(0) : 0;
-            int magoBCount = configSimplesTimeB.size() > 1 ? configSimplesTimeB.get(1) : 0;
+            int magoACount = configSimplesTimeA.size() > 3 ? configSimplesTimeA.get(3) : 0;
+            int tankBCount = configSimplesTimeB.size() > 0 ? configSimplesTimeB.get(0) : 0;
+            int guerreiroBCount = configSimplesTimeB.size() > 1 ? configSimplesTimeB.get(1) : 0;
             int rangerBCount = configSimplesTimeB.size() > 2 ? configSimplesTimeB.get(2) : 0;
+            int magoBCount = configSimplesTimeB.size() > 3 ? configSimplesTimeB.get(3) : 0;
 
+            for (int i = 0; i < tankACount; i++) { Tank t = new Tank("A-Tank-" + (i+1)); equipeTimeA.adicionar(t); personagensTimeA.add(t); }
             for (int i = 0; i < guerreiroACount; i++) { Guerreiro g = new Guerreiro("A-Guerreiro-" + (i+1)); equipeTimeA.adicionar(g); personagensTimeA.add(g); }
-            for (int i = 0; i < magoACount; i++) { Mago m = new Mago("A-Mago-" + (i+1)); equipeTimeA.adicionar(m); personagensTimeA.add(m); }
             for (int i = 0; i < rangerACount; i++) { Ranger r = new Ranger("A-Ranger-" + (i+1)); equipeTimeA.adicionar(r); personagensTimeA.add(r); }
+            for (int i = 0; i < magoACount; i++) { Mago m = new Mago("A-Mago-" + (i+1)); equipeTimeA.adicionar(m); personagensTimeA.add(m); }
+
+            for (int i = 0; i < tankBCount; i++) { Tank t = new Tank("B-Tank-" + (i+1)); equipeTimeB.adicionar(t); personagensTimeB.add(t); }
             for (int i = 0; i < guerreiroBCount; i++) { Guerreiro g = new Guerreiro("B-Guerreiro-" + (i+1)); equipeTimeB.adicionar(g); personagensTimeB.add(g); }
-            for (int i = 0; i < magoBCount; i++) { Mago m = new Mago("B-Mago-" + (i+1)); equipeTimeB.adicionar(m); personagensTimeB.add(m); }
             for (int i = 0; i < rangerBCount; i++) { Ranger r = new Ranger("B-Ranger-" + (i+1)); equipeTimeB.adicionar(r); personagensTimeB.add(r); }
+            for (int i = 0; i < magoBCount; i++) { Mago m = new Mago("B-Mago-" + (i+1)); equipeTimeB.adicionar(m); personagensTimeB.add(m); }
         } else {
             // fallback: sem configuração, times ficam vazios (use Config Teams)
         }
@@ -198,7 +204,7 @@ public class GameUI {
         if (dlg.isConfirmed()) {
             configSimplesTimeA = dlg.getCountsForA();
             configSimplesTimeB = dlg.getCountsForB();
-            painelConsole.append("Configuração simples aplicada (Guerreiro, Mago, Ranger)");
+            painelConsole.append("Configuração simples aplicada (Tank, Guerreiro, Ranger, Mago)");
         } else {
             painelConsole.append("Configuração de times cancelada");
         }
