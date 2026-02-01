@@ -8,6 +8,7 @@ import characters.Mago;
 import characters.Personagem;
 import characters.Ranger;
 import characters.Tank;
+import characters.Clerigo;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class GameUI {
     private Equipe equipeTimeB;
     private List<Personagem> personagensTimeA;
     private List<Personagem> personagensTimeB;
-    // configuração simples: lista de inteiros onde index 0 = Tank, 1 = Guerreiro, 2 = Ranger, 3 = Mago
+    // configuração simples: lista de inteiros onde index 0 = Tank, 1 = Guerreiro, 2 = Ranger, 3 = Mago, 4 = Clerigo
     private java.util.List<Integer> configSimplesTimeA = null;
     private java.util.List<Integer> configSimplesTimeB = null;
 
@@ -180,7 +181,7 @@ public class GameUI {
             int rangerBCount = configSimplesTimeB.size() > 2 ? configSimplesTimeB.get(2) : 0;
             int magoBCount = configSimplesTimeB.size() > 3 ? configSimplesTimeB.get(3) : 0;
 
-            // Cria grupos simples por classe e adiciona em ordem (0=Tank,1=Guerreiro,2=Ranger,3=Mago)
+            // Cria grupos simples por classe e adiciona em ordem (0=Tank,1=Guerreiro,2=Ranger,3=Mago, 4=Clerigo)
             List<Personagem> groupTanksA = new ArrayList<>();
             for (int i = 0; i < tankACount; i++) groupTanksA.add(new Tank("A-Tank-" + (i+1)));
             equipeTimeA.adicionarClasse(groupTanksA, 0);
@@ -201,6 +202,11 @@ public class GameUI {
             equipeTimeA.adicionarClasse(groupMagosA, 3);
             personagensTimeA.addAll(groupMagosA);
 
+            List<Personagem> groupClerigosA = new ArrayList<>();
+            for (int i = 0; i < clerigoACount; i++) groupClerigosA.add(new Clerigo("A-Clerigo-" + (i+1)));
+            equipeTimeA.adicionarClasse(groupClerigosA, 4);
+            personagensTime.addAll(groupClerigosA);
+            
             // Team B
             List<Personagem> groupTanksB = new ArrayList<>();
             for (int i = 0; i < tankBCount; i++) groupTanksB.add(new Tank("B-Tank-" + (i+1)));
@@ -222,6 +228,11 @@ public class GameUI {
             equipeTimeB.adicionarClasse(groupMagosB, 3);
             personagensTimeB.addAll(groupMagosB);
 
+            List<Personagem> groupClerigosB = nwe ArrayList<>();
+            for (int i = 0; i < clerigoBCount; i++) groupClerigosB.add(new Clerigo("B-Clerigo-" + (i+1)));
+            equipeTimeB.adicionarClasse(groupClerigosB, 4);
+            personagensTimeB.addAll(groupClerigosB);
+
         } else {
             // fallback: sem configuração, times ficam vazios (use Config Teams)
         }
@@ -237,7 +248,7 @@ public class GameUI {
         if (dlg.isConfirmed()) {
             configSimplesTimeA = dlg.getCountsForA();
             configSimplesTimeB = dlg.getCountsForB();
-            painelConsole.append("Configuração simples aplicada (Tank, Guerreiro, Ranger, Mago)");
+            painelConsole.append("Configuração simples aplicada (Tank, Guerreiro, Ranger, Mago, Clerigo)");
         } else {
             painelConsole.append("Configuração de times cancelada");
         }
