@@ -5,7 +5,6 @@ import characters.Mago;
 import characters.Personagem;
 import characters.Ranger;
 import characters.Tank;
-import characters.Clerigo
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -187,11 +186,6 @@ public class ArenaView extends JPanel {
                         if (!p.personagemVivo()) {
                             corBase = COR_MORTE;
                         }
-                    } else if (p instanceof Clerigo) {
-                        colBase = Clerigo.corPrincipal(ladoEsquerdo);
-                        if (!p.personagemVivo()) {
-                            corBase = COR_MORTE;
-                        }
                     } else {
                         corBase = p.personagemVivo() ? new Color(80, 160, 220) : COR_MORTE;
                     }
@@ -301,11 +295,6 @@ public class ArenaView extends JPanel {
                         }
                     } else if (p instanceof Tank) {
                         corBase = Tank.corPrincipal(ladoEsquerdo);
-                        if (!p.personagemVivo()) {
-                            corBase = COR_MORTE;
-                        }
-                    } else if (p instanceof Clerigo) {
-                        corBase = Clerigo.corPrincipal(ladoEsquerdo);
                         if (!p.personagemVivo()) {
                             corBase = COR_MORTE;
                         }
