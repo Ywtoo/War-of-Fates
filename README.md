@@ -37,7 +37,7 @@ Como jogar (UI)
  
 Apresentação (vídeo)
 
-- Link da apresentação no YouTube: 
+- Link da apresentação: https://youtu.be/yB04CjubFtw
 
 Prompts usados
 

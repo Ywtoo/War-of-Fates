@@ -2,9 +2,9 @@ package characters;
 
 import java.util.Arrays;
 
-public class Clerico extends Personagem {
+public class Clerigo extends Personagem {
 
-    public Clerico(String nome) {
+    public Clerigo(String nome) {
         super(
             nome,
             15 + statusAleatorio(-1, 3),     // Vida maior que Mago
